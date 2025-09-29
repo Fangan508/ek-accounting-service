@@ -1,0 +1,51 @@
+# .NET build outputs
+bin/
+obj/
+out/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Files built by Visual Studio
+*.obj
+*.iobj
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+#but keep track of directories ending in .cache
+!?*.[Cc]ache/
+
+# Rider files
+.idea/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+# Logs
+*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Others
+*.DS_Store
+*.env
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+
+# Publish outputs
+publish/

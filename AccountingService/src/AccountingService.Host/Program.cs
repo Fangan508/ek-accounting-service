@@ -1,6 +1,36 @@
+using AccountingService.Host;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) // Loads the main configuration file (required).
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true) // Loads environment-specific configuration file (optional).
+    .AddUserSecrets<Program>() // Loads secrets from user secrets store (the secrets.json file linked to the project’s UserSecretsId).
+    .AddEnvironmentVariables(); // Loads configuration values from environment variables.
+
+
+// AllowedCorsOrigins controls which origins are allowed to make cross-origin requests to the API.
+var allowedOrigins = builder.Configuration.GetSection("AllowedCorsOrigins:Origins").Get<string[]>();
+
+if (allowedOrigins == null || allowedOrigins.Length == 0)
+{
+    throw new InvalidOperationException("Missing required configuration: AllowedCorsOrigins:Origins");
+}
+
 // Add services to the container.
+builder.Services
+    .AddPresentation()
+    .AddDependencyInjection()
+    .AddCors(options =>
+    {         
+        options.AddPolicy("AllowAngularApp",
+            policy => policy
+                .WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
+     });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -8,7 +38,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local") || app.Environment.EnvironmentName == "Staging")
 {
     app.UseSwagger();
     app.UseSwaggerUI();

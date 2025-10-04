@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingService.Presentation", "AccountingService.Presentation\AccountingService.Presentation.csproj", "{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{25037F49-9907-4081-B1A3-93BC21EAB1D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25037F49-9907-4081-B1A3-93BC21EAB1D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25037F49-9907-4081-B1A3-93BC21EAB1D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25037F49-9907-4081-B1A3-93BC21EAB1D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25037F49-9907-4081-B1A3-93BC21EAB1D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 		{2D69732E-3FFB-4524-BD38-AEDEE9E220B1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FB2A54BD-8089-4991-B7A3-BBD76287DF3E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{25037F49-9907-4081-B1A3-93BC21EAB1D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D93EC9DD-7331-409D-AE84-F5C03420F177}

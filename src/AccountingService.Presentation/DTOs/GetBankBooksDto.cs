@@ -1,0 +1,17 @@
+﻿namespace AccountingService.Presentation.DTOs;
+
+/// <summary>
+/// Represents a data transfer object for retrieving bank books.
+/// </summary>
+public class GetBankBooksDto
+{
+    /// <summary>
+    /// Gets or sets the unique identifier for the bank book.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the bank book.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+}

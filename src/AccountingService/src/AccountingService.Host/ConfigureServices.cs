@@ -1,5 +1,10 @@
-﻿using Common.Infrastructure;
+﻿using AccountingService.Host.Extensions;
+using Azure.Identity;
+using Common.Infrastructure;
+using Common.Interfaces;
+using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
+using Service;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -14,6 +19,11 @@ namespace AccountingService.Host;
 /// container.</remarks>
 public static class ConfigureServices
 {
+    /// <summary>
+    /// Configures presentation layer services, such as controllers, problem details, and exception handling.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers()
@@ -74,7 +84,16 @@ public static class ConfigureServices
         //Register services and interfaces for DI
         services.AddMemoryCache();
 
+        services.AddSingleton<DefaultAzureCredential>();
+        services.AddSingleton<IAzurePostgresConnectionFactory, AzurePostgresConnectionFactory>();
+        //services.AddSingleton<PostgresTokenHealthCHeck>();
+
         services.AddLogging();
+        services.AddScoped<IAccountingBookingService, AccountingBookingService>();
+
+        // Register repositories, unit of work, etc.
+        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IAccountingBookingRepository, AccountingBookingRepository>();
 
         return services;
     }

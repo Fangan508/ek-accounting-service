@@ -12,4 +12,13 @@ public class AccountingDbContext : DbContext
     /// Gets or sets the BankBooks table.
     /// </summary>
     public virtual DbSet<BankBook> BankBooks { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AccountingDbContext"/> class.
+    /// </summary>
+    /// <param name="options"></param>
+    public AccountingDbContext(DbContextOptions<AccountingDbContext> options)
+        : base(options)
+    {
+    }
 }

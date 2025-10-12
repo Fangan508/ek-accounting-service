@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a data transfer object for retrieving bank books.
 /// </summary>
-public class GetBankBooksDto
+public class GetBankBookDto
 {
     /// <summary>
     /// Gets or sets the unique identifier for the bank book.
@@ -14,4 +14,9 @@ public class GetBankBooksDto
     /// Gets or sets the name of the bank book.
     /// </summary>
     public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the booking date of the bank book.
+    /// </summary>
+    public DateTime BookingDate { get; set; }
 }

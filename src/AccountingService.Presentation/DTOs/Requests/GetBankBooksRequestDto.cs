@@ -6,7 +6,12 @@
 public class GetBankBooksRequestDto : PagedSortedSearchRequestDto
 {
     /// <summary>
+    /// Gets or sets the unique identifier of the bank book.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// Get or set the booking bank date for filtering booking banks.
     /// </summary>
-    public DateTime? BookingBankDate { get; set; }
+    public DateTime? BookingDate { get; set; }
 }

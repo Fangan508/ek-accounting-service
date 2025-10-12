@@ -21,4 +21,10 @@ public class BankBook
     [Required]
     [StringLength(255)]
     public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the booking date.
+    /// </summary>
+    [Required]
+    public DateTime BookingDate { get; set; }
 }

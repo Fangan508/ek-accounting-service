@@ -24,9 +24,9 @@ public static class ValidateRequests
             return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.NullRequest", "Get bank books request cannot be null"));
         }
 
-        if (request.BookingBankDate.HasValue)
+        if (request.BookingDate.HasValue)
         {
-            DateTime date = request.BookingBankDate.Value;
+            DateTime date = request.BookingDate.Value;
             if (date == DateTime.MinValue || date > DateTime.UtcNow)
             {
                 return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.InvalidBookingBankDatae", "Invalid accounting booking date provided"));

@@ -55,7 +55,7 @@ namespace AccountingService.Presentation.Controllers
         /// <response code="401">Unauthorized - User not authenticated.</response>
         /// <response code="404">No bank books found for the current user.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [ProducesResponseType(typeof(PaginatedResponseDto<GetBankBooksDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResponseDto<GetBankBookDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,7 +76,7 @@ namespace AccountingService.Presentation.Controllers
                     return result.ToProblemDetails();
                 }
 
-                var response = _mapper.Map<PaginatedResponse<GetBankBooksDto>>(result.Value);
+                var response = _mapper.Map<PaginatedResponseDto<GetBankBookDto>>(result.Value);
 
                 ApplicationDiagnostics.RecordBusinessOperation("Success", response.Pagination.Total);
 

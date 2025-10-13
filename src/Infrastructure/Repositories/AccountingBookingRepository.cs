@@ -41,8 +41,9 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
         var items = await query
             .Select(bankbook => new GetBankBook
             {
-                Id = bankbook.Id
-                
+                Id = bankbook.Id,
+                Name = bankbook.Name,
+                BookingDate = bankbook.BookingDate
             })
             .ToListAsync();
 
@@ -57,6 +58,5 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
                 Total = totalCount
             }
         };
-
     }
 }

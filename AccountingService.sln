@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingService.Presentation", "src\AccountingService.Presentation\AccountingService.Presentation.csproj", "{EE20EC90-8D87-44FB-8F92-ED5F4FBCA92D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "src\Service\Service.csproj", "{25037F49-9907-4081-B1A3-93BC21EAB1D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6F89963A-453D-4503-8A42-D3558E8CE346} = {6F89963A-453D-4503-8A42-D3558E8CE346}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{6F89963A-453D-4503-8A42-D3558E8CE346}"
 EndProject

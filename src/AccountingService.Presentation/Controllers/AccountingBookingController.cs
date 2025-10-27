@@ -2,21 +2,13 @@
 using AccountingService.Presentation.DTOs.Requests;
 using AccountingService.Presentation.DTOs.Response;
 using AutoMapper;
-using Common.Entities.PaginationSortSearch;
 using Common.Entities.Requests;
-using Common.Entities.Response;
 using Common.Infrastructure;
 using Common.Interfaces;
 using Common.ResultObject;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccountingService.Presentation.Controllers
 {
@@ -96,6 +88,67 @@ namespace AccountingService.Presentation.Controllers
             {
                 stopwatch.Stop();
                 
+                ApplicationDiagnostics.RecordHttpRequest(
+                    HttpContext.Request.Method,
+                    HttpContext.Request.Path,
+                    HttpContext.Response.StatusCode,
+                    stopwatch.Elapsed.TotalSeconds);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the positions of a specific bank book.
+        /// </summary>
+        /// <param name="bankBookId">The unique identifier of the bank book.</param>
+        /// <param name="pagedSortedRequestDto">The pagination, sorting, and search criteria for retrieving bank book positions.</param>
+        /// <returns>
+        /// An <see cref="IResult"/> containing the result of the operation.
+        /// If successful, returns a 200 status code with a paginated list of bank book positions.
+        /// </returns>
+        /// <response code="200">Successfully retrieved the positions the bank book.</response>
+        /// <response code="401">Unauthorized - User not authenticated.</response>
+        /// <response code="404">No positions found for the specified bank book.</response>
+        /// <response code="500">Internal server error occurred.</response>
+        [ProducesResponseType(typeof(PaginatedResponseDto<GetBankBookPositionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{bankBookId}")]
+        public async Task<IResult> GetBankBookPositions([FromRoute] Guid bankBookId, [FromQuery] PagedSortedRequestDto pagedSortedRequestDto)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                var pagedSortedRequest = _mapper.Map<PagedSortedRequest>(pagedSortedRequestDto);
+                var result = await _accountingBookingService.GetBankBookPositions(bankBookId, pagedSortedRequest);
+
+                if (result.IsFailure)
+                {
+                    ApplicationDiagnostics.RecordError(result.Error.Name, result.Error.Code);
+                    return result.ToProblemDetails();
+                }
+
+                var response = _mapper.Map<PaginatedResponseDto<GetBankBookPositionDto>>(result.Value);
+
+                ApplicationDiagnostics.RecordBusinessOperation("Success", response.Pagination.Total);
+
+                return Results.Ok(response);
+            }
+            catch (AutoMapperMappingException ex)
+            {
+                ApplicationDiagnostics.RecordError("MappingError", ex.Message);
+                return Results.Problem("Mapping failure.", statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                ApplicationDiagnostics.RecordError("UnhandledException", ex.Message);
+                return Results.Problem("An unexpected error occurred.", statusCode: StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                stopwatch.Stop();
                 ApplicationDiagnostics.RecordHttpRequest(
                     HttpContext.Request.Method,
                     HttpContext.Request.Path,

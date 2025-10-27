@@ -51,4 +51,36 @@ public static class ValidateRequests
 
         return Result.Success(paginatedResponse);
     }
+
+    /// <summary>
+    /// Validates the parameters and returns a result indicating success or failure.
+    /// </summary>
+    /// <param name="bankBookId">The ID of the bank book to validate.</param>
+    /// <param name="pagedSortedRequest">The paginated and sorted request to validate.</param>
+    /// <returns><see cref="Result{TValue}"/> containing a paginated response of accounting book positions if validation succeeds, or an error if validation fails.</returns>
+    public static Result<PaginatedResponse<GetBankBookPosition>> ValidateGetBankBookPositionsRequest(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    {
+        if (bankBookId == Guid.Empty)
+        { 
+            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidBankBookId", "Bank Book Id cannot be empty."));
+        }
+
+        if (pagedSortedRequest.Offset < 0)
+        {
+            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidPageNumber", "Offset can't be less than zero"));
+        }
+
+        if (pagedSortedRequest.Limit < 1)
+        {
+            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidPageSize", "Limit must be greater than 0."));
+        }
+
+        var response = new PaginatedResponse<GetBankBookPosition>
+        {
+            Items = [],
+            Pagination = new Pagination { }
+        };
+
+        return Result.Success(response);
+    }
 }

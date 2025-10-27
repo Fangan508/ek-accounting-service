@@ -60,4 +60,40 @@ public class AccountingBookingService : IAccountingBookingService
             return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Failure("GetBankBooks.Failed", ex.Message));
         }
     }
+
+    /// <summary>
+    /// Retrieves a paginated list of bank book positions based on the specified bank book ID.
+    /// </summary>
+    /// <param name="bankBookId">The unique identifier of the bank book.</param>
+    /// <param name="pagedSortedRequest">The request containing pagination and sorting details.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{T}"/>
+    /// where T is a <see cref="PaginatedResponse{GetBankBookPositions}"/> which includes the paginated list of bank book positions.
+    /// </returns>
+    public async Task<Result<PaginatedResponse<GetBankBookPosition>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    {
+        try
+        {
+            var validationResult = ValidateRequests.ValidateGetBankBookPositionsRequest(bankBookId, pagedSortedRequest);
+            if (validationResult.IsFailure)
+            { 
+                return validationResult; 
+            }
+
+            var exists = await _accountingBookingRepository.BankBookExists(bankBookId);
+            if (!exists) 
+            {
+                return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.NotFound("GetBankBookPositions.Failed", $"The bank book with id {bankBookId}, was not found."));
+            }
+
+            var response = await _accountingBookingRepository.GetBankBookPositions(bankBookId, pagedSortedRequest);
+            return Result.Success(response);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to get bank book positions for bank book id: {@id}", bankBookId);
+
+            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Failure("GetBankBookPositions.Failed", ex.Message));
+        }
+    }
 }

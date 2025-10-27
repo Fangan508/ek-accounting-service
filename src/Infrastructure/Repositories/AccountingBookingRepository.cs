@@ -3,6 +3,9 @@ using Common.Entities.PaginationSortSearch;
 using Common.Entities.Requests;
 using Common.Entities.Response;
 using Common.Interfaces;
+using Common.ResultObject;
+using Common.Utilities;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -58,5 +61,83 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
                 Total = totalCount
             }
         };
+    }
+
+    /// <summary>
+    /// Retrieves a paginated list of bank book positions for a specific bank book.
+    /// </summary>
+    /// <param name="bankBookId">The unique identifier of the bank book.</param>
+    /// <param name="pagedSortedRequest">The request containing pagination and sorting options.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a response with paginated bank book positions.</returns>
+    public async Task<PaginatedResponse<GetBankBookPosition>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    {
+        if (bankBookId == Guid.Empty)
+        {
+            return new PaginatedResponse<GetBankBookPosition>
+            {
+                Items = [],
+                Pagination = new Pagination
+                {
+                    Page = 0,
+                    PageSize = 0,
+                    Total = 0
+                }
+            };
+        }
+
+        var positionQuery = _context.BankBookPositions.AsNoTracking()
+            .Where(position => position.BankBookId == bankBookId);
+
+        var groupedQuery = positionQuery
+            .GroupBy(position => new
+            {
+                position.SellerName,
+                position.BookingDate,
+                position.Amount
+            })
+            .Select(g => new GetBankBookPosition
+            {
+                BookingDate = g.Key.BookingDate,
+                SellerName = g.Key.SellerName,
+                Amount = g.Key.Amount
+            });
+
+        var sortCriteria = pagedSortedRequest.SortCriteria;
+        if (sortCriteria != null && sortCriteria.Any())
+        {
+            var sortFieldMappings = new Dictionary<SortField, ISortExpression<GetBankBookPosition>>
+            {
+                { SortField.BookingDate, new SortExpression<GetBankBookPosition, DateTime>(p => p.BookingDate) }
+            };
+
+            groupedQuery = SortPaginationHelper.ApplySorting(groupedQuery, sortCriteria, sortFieldMappings);
+        }
+
+        var totalCount = await groupedQuery.CountAsync();
+
+        groupedQuery = SortPaginationHelper.ApplyPagination(groupedQuery, pagedSortedRequest.Offset, pagedSortedRequest.Limit);
+
+        var items = await groupedQuery.ToListAsync();
+
+        return new PaginatedResponse<GetBankBookPosition>
+        {
+            Items = items,
+            Pagination = new Pagination
+            {
+                Page = (int)Math.Floor((double)pagedSortedRequest.Offset / pagedSortedRequest.Limit),
+                PageSize = pagedSortedRequest.Limit,
+                Total = totalCount
+            }
+        };
+    }
+
+    /// <summary>
+    /// Checks if a bank book with the specified ID exists in the database.
+    /// </summary>
+    /// <param name="bankBookId">The unique identifier of the bank book.</param>
+    /// <returns>A task that representing the asynchronous operation. The task result contains a boolean value indicating whether the bank book exists.</returns>
+    public async Task<bool> BankBookExists(Guid bankBookId)
+    {
+        return await _context.BankBooks.AnyAsync(bankBook =>  bankBook.Id == bankBookId);
     }
 }

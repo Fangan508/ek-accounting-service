@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Infrastructure
 {
@@ -29,6 +24,9 @@ namespace Common.Infrastructure
         /// </summary>
         public static readonly ActivitySource ActivitySource = new ActivitySource(ServiceName);
 
+        /// <summary>
+        /// Tracks HTTP requests with duration, method, endpoint and status.
+        /// </summary>
         public static readonly Histogram<double> HttpRequestDuration =
             Meter.CreateHistogram<double>(
                 name: "http_request_duration_seconds",

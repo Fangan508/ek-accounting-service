@@ -24,6 +24,9 @@ public class MappingProfile : Profile
         CreateMap<Pagination, PaginationDto>();
         CreateMap<PaginatedResponse<GetBankBook>, PaginatedResponseDto<GetBankBookDto>>();
 
+        CreateMap<GetBankBookPosition, GetBankBookPositionDto>();
+        CreateMap<PaginatedResponse<GetBankBookPosition>, PaginatedResponseDto<GetBankBookPositionDto>>();
+
         // DTO to entity mappings
         // Note: This area is for <MyClass>Dto to <MyClass> mappings.
         CreateMap<PagedSortedRequestDto, PagedSortedRequest>();

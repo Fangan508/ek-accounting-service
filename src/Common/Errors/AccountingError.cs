@@ -5,8 +5,14 @@
 /// </summary>
 public class AccountingError
 {
+    /// <summary>
+    /// Represents no error.
+    /// </summary>
     public static readonly AccountingError None = new(string.Empty, string.Empty, ErrorType.Failure);
 
+    /// <summary>
+    /// Represents an error when a null value is provided.
+    /// </summary>
     public static readonly AccountingError NullValue = new("AccountingError.NullValue", "Null value was provided.", ErrorType.Failure);
 
     /// <summary>

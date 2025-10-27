@@ -140,7 +140,7 @@ public class Result<TValue> : Result
     /// Gets the value of the result if the operation was successful.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if accessed when the result represents a failure (i.e., <see cref="IsSuccess"/> is false).
+    /// Thrown if accessed when the result represents a failure (i.e., <see cref="Result.IsSuccess"/> is false).
     /// </exception>
     /// <value>
     /// The value of type <typeparamref name="TValue"/> associated with the result.

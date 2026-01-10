@@ -1,11 +1,16 @@
-﻿using Common.Entities;
+﻿using AutoMapper;
+using Common.Domain.BankBook.RequestModels;
+using Common.DomainHelpers;
+using Common.Entities;
 using Common.Entities.PaginationSortSearch;
 using Common.Entities.Requests;
 using Common.Entities.Response;
 using Common.Interfaces;
 using Common.ResultObject;
 using Common.Utilities;
+using Infrastructure.Entities;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -17,17 +22,17 @@ namespace Infrastructure.Repositories;
 /// </summary>
 public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IAccountingBookingRepository
 {
-    private readonly ILogger<AccountingBookingRepository> _logger;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccountingBookingRepository"/> class with the specified <see cref="AccountingDbContext"/>.
     /// </summary>
     /// <param name="context">The database context used for data access.</param>
-    /// <param name="logger">The logger instance used for logging repository operations.</param>
+    /// <param name="mapper">The mapper instance used for object-object mapping.</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public AccountingBookingRepository(AccountingDbContext context, ILogger<AccountingBookingRepository> logger) : base(context)
+    public AccountingBookingRepository(AccountingDbContext context, IMapper mapper) : base(context)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     /// <summary>
@@ -139,5 +144,17 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
     public async Task<bool> BankBookExists(Guid bankBookId)
     {
         return await _context.BankBooks.AnyAsync(bankBook =>  bankBook.Id == bankBookId);
+    }
+
+    /// <summary>
+    /// Creates a new bank book in the database.
+    /// </summary>
+    /// <param name="bankBookModel">The bank book entity to be created.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+    public async Task CreateBankBook(BankBookCreated bankBookModel)
+    {   
+        var bankBook = _mapper.Map<BankBookDbEntity>(bankBookModel);
+        await AddAsync(bankBook);
+        await SaveAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Common.Entities.Requests;
+﻿using Common.Domain.BankBook.RequestModels;
+using Common.Entities.Requests;
 using Common.Entities.Response;
 using Common.ResultObject;
 namespace Common.Interfaces;
@@ -28,4 +29,14 @@ public interface IAccountingBookingService
     /// object wrapping a <see cref="PaginatedResponse{GetBankBookPosition}"/> which includes the collection of bank books and metadata.
     /// </returns>
     Task<Result<PaginatedResponse<GetBankBookPosition>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest);
+
+    /// <summary>
+    /// Asynchronously creates a new bank book.
+    /// </summary>
+    /// <param name="request">The details of the bank book to be created.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{TValue}"/>
+    /// object wrapping the unique identifier (<see cref="Guid"/>) of the newly created bank book.
+    /// </returns>
+    Task<Result<Guid>> CreateBankBook(BankBookCreateModel request);
 }

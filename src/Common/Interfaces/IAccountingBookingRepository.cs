@@ -1,4 +1,6 @@
-﻿using Common.Entities;
+﻿using Common.Domain.BankBook.RequestModels;
+using Common.DomainHelpers;
+using Common.Entities;
 using Common.Entities.Requests;
 using Common.Entities.Response;
 
@@ -30,4 +32,11 @@ public interface IAccountingBookingRepository : IBaseRepository<AccountingBookin
     /// <param name="bankBookId">The unique identifier of the bank book.</param>
     /// <returns>A task that represents the asynchronous operation. The task result indicates whether the bank book exists.</returns>
     Task<bool> BankBookExists(Guid bankBookId);
+
+    /// <summary>
+    /// Creates a new bank book in the database.
+    /// </summary>
+    /// <param name="bankBookModel">The bank book entity to be created.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+    Task CreateBankBook(BankBookCreated bankBookModel);
 }

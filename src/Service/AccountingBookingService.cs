@@ -1,4 +1,7 @@
-﻿using Common.Entities.Requests;
+﻿using Common.Domain.BankBook.RequestModels;
+using Common.DomainHelpers;
+using Common.Entities;
+using Common.Entities.Requests;
 using Common.Entities.Response;
 using Common.Errors;
 using Common.Interfaces;
@@ -92,8 +95,69 @@ public class AccountingBookingService : IAccountingBookingService
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Failed to get bank book positions for bank book id: {@id}", bankBookId);
-
             return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Failure("GetBankBookPositions.Failed", ex.Message));
         }
+    }
+
+    /// <summary>
+    /// Creates a new bank book with the specified details.
+    /// </summary>
+    /// <param name="request">The details of the bank book to be created.</param>
+    /// <returns>A result indicating success with the created bank book ID, or failure with error details.</returns>
+    public async Task<Result<Guid>> CreateBankBook(BankBookCreateModel request)
+    {
+        try
+        {
+            var validationResult = ValidateRequests.ValidateBankBookCreateRequest(request);
+            if (validationResult.IsFailure)
+            {
+                return validationResult;
+            }   
+
+            var bankBook = await BuildBankBookFromRequest(request);
+            await _accountingBookingRepository.CreateBankBook(bankBook);
+
+            return Result.Success(bankBook.Id);
+        }
+        catch (Exception ex)
+        {
+
+            _logger?.LogError(ex, "Failed to create bank book with request: {@Request}", request);
+            return Result.Failure<Guid>(AccountingError.Failure("CreateBankBook.Failed", ex.Message));
+        }
+    }
+
+    private async Task<BankBookCreated> BuildBankBookFromRequest(BankBookCreateModel request)
+    {
+        var bankBook = new BankBookCreated
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            BookingDate = request.BookingDate
+        };
+
+        if (request.Positions.Any())
+        {
+            var bankBookPositions = await CreateBankBookPositions(request.Positions);
+
+            foreach (var position in bankBookPositions)
+            {
+                bankBook.Positions.Add(position);
+            }
+        }
+
+        return bankBook;
+    }
+
+
+    private async Task<IEnumerable<BankBookPositionCreated>> CreateBankBookPositions(IEnumerable<BankBookPositionModel> bankBookPositions)
+    {
+        return bankBookPositions.Select(position => new BankBookPositionCreated
+        {
+            Id = Guid.NewGuid(),
+            SellerName = position.SellerName,
+            BookingDate = position.BookingDate ?? DateTime.UtcNow,
+            Amount = position.Amount
+        });
     }
 }

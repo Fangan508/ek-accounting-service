@@ -2,6 +2,7 @@
 using AccountingService.Presentation.DTOs.Requests;
 using AccountingService.Presentation.DTOs.Response;
 using AutoMapper;
+using Common.Domain.BankBook.RequestModels;
 using Common.Entities.Requests;
 using Common.Infrastructure;
 using Common.Interfaces;
@@ -133,6 +134,57 @@ namespace AccountingService.Presentation.Controllers
                 var response = _mapper.Map<PaginatedResponseDto<GetBankBookPositionDto>>(result.Value);
 
                 ApplicationDiagnostics.RecordBusinessOperation("Success", response.Pagination.Total);
+
+                return Results.Ok(response);
+            }
+            catch (AutoMapperMappingException ex)
+            {
+                ApplicationDiagnostics.RecordError("MappingError", ex.Message);
+                return Results.Problem("Mapping failure.", statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                ApplicationDiagnostics.RecordError("UnhandledException", ex.Message);
+                return Results.Problem("An unexpected error occurred.", statusCode: StatusCodes.Status500InternalServerError);
+            }
+            finally
+            {
+                stopwatch.Stop();
+                ApplicationDiagnostics.RecordHttpRequest(
+                    HttpContext.Request.Method,
+                    HttpContext.Request.Path,
+                    HttpContext.Response.StatusCode,
+                    stopwatch.Elapsed.TotalSeconds);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new bank book with the provided details.
+        /// </summary>
+        /// <param name="bankBookCreateDto">The </param>
+        /// <returns></returns>
+        [ProducesResponseType(typeof(BankBookCreatedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IResult> CreateBankBook([FromBody] BankBookCreateDto bankBookCreateDto)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                var request = _mapper.Map<BankBookCreateModel>(bankBookCreateDto);
+                var result = await _accountingBookingService.CreateBankBook(request);
+
+                if (result.IsFailure)
+                {
+                    ApplicationDiagnostics.RecordError(result.Error.Name, result.Error.Code);
+                    return result.ToProblemDetails();
+                }
+
+                var response = _mapper.Map<BankBookCreatedDto>(result.Value);
+
+                ApplicationDiagnostics.RecordBusinessOperation("Success");
 
                 return Results.Ok(response);
             }

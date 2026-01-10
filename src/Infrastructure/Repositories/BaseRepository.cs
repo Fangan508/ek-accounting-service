@@ -38,7 +38,7 @@ public class BaseRepository<T> : IBaseRepository<T>
     /// <returns>A task that represents the asynchronous add operation.</returns>
     public async Task AddAsync(T entity)
     {
-        await _context.AddAsync(entity);
+        await _dbSet.AddAsync(entity);
     }
 
     /// <summary>

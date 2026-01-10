@@ -1,4 +1,5 @@
-﻿using Common.Entities.PaginationSortSearch;
+﻿using Common.Domain.BankBook.RequestModels;
+using Common.Entities.PaginationSortSearch;
 using Common.Entities.Requests;
 using Common.Entities.Response;
 using Common.Errors;
@@ -82,5 +83,30 @@ public static class ValidateRequests
         };
 
         return Result.Success(response);
+    }
+
+    /// <summary>
+    /// Validates the <see cref="BankBookCreateModel"/> request and returns a result indicating success or failure."/>
+    /// </summary>
+    /// <param name="request">The request to validate.</param>
+    /// <returns>A <see cref="Result{TValue}"/> containing a GUID if validation succeeds, or an error if validation fails.</returns>
+    public static Result<Guid> ValidateBankBookCreateRequest(BankBookCreateModel request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            return Result.Failure<Guid>(AccountingError.Validation("AccountingError.InvalidBankBookName", "Bank book name is required."));
+        }
+
+        if (request.Positions is null || !request.Positions.Any())
+        {
+            return Result.Failure<Guid>(AccountingError.Validation("AccountingError.NoBankBookPositions", "At least one bank book position is required to create a bank book."));
+        }
+
+        if (request.BookingDate == DateTime.MinValue || request.BookingDate > DateTime.UtcNow)
+        {
+            return Result.Failure<Guid>(AccountingError.Validation("AccountingError.InvalidBookingDate", "Invalid booking date provided."));
+        }
+
+        return Result.Success(Guid.Empty);
     }
 }

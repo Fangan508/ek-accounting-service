@@ -1,9 +1,9 @@
-﻿namespace Common.Entities.Response;
+﻿namespace AccountingService.Presentation.DTOs.Response;
 
 /// <summary>
-/// Represents a response containing paginated bank book positions.
+/// Represents a position in a bank book, including details about the transaction, seller and date.
 /// </summary>
-public class GetBankBookPosition
+public class BankBookPositionDto
 {
     /// <summary>
     /// Gets or sets the booking date of the bank book position.

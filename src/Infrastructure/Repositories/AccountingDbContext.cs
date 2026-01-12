@@ -1,4 +1,4 @@
-﻿using Common.Entities;
+﻿using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -11,12 +11,12 @@ public class AccountingDbContext : DbContext
     /// <summary>
     /// Gets or sets the BankBooks table.
     /// </summary>
-    public virtual DbSet<BankBook> BankBooks { get; set; }
+    public virtual DbSet<BankBookDbEntity> BankBooks { get; set; }
 
     /// <summary>
     /// Gets or sets the BankBookPosition table.
     /// </summary>
-    public virtual DbSet<BankBookPosition> BankBookPositions { get; set; }
+    public virtual DbSet<BankBookPositionDbEntity> BankBookPositions { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccountingDbContext"/> class.

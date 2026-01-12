@@ -23,12 +23,12 @@ public class BankBookPositionDbEntity
     /// <summary>
     /// Gets or sets the booking date of the bank book position.
     /// </summary>
-    public DateTime? BookingDate { get; set; }
+    public DateTime BookingDate { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the seller or vendor from whom the item was purchased.
     /// </summary>
-    public string? SellerName { get; set; }
+    public string SellerName { get; set; }
 
     /// <summary>
     /// Gets or sets the monetary amount associated with this position.

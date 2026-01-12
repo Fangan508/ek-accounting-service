@@ -1,9 +1,9 @@
-﻿namespace Common.Entities.Requests;
+﻿namespace Common.Domain.PaginationSortSearch;
 
 /// <summary>
 /// Represents a request for paged, sorted, and searchable data.
 /// </summary>
-public class PagedSortedSearchRequest : PagedSortedRequest
+public class PagedSortedSearchRequestModel : PagedSortedRequestModel
 {
     /// <summary>
     /// Gets or sets the search text to filter results.

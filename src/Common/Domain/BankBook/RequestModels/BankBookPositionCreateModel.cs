@@ -1,24 +1,25 @@
-﻿namespace Common.Domain.BankBook.RequestModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Domain.BankBook.RequestModels;
 
 /// <summary>
-/// Represents a position in a bank book.
+/// Represents a response containing paginated bank book positions.
 /// </summary>
-public class BankBookPositionModel
+public class BankBookPositionCreateModel
 {
-    /// <summary>
-    /// Gets or sets the unique identifier for the bank book position.
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets the booking date of the bank book position.
     /// </summary>
-    public DateTime? BookingDate { get; set; }
+    public DateTime BookingDate { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the seller or vendor from whom the item was purchased.
     /// </summary>
-    public string SellerName { get; set; } = string.Empty;
+    public required string SellerName { get; set; }
 
     /// <summary>
     /// Gets or sets the monetary amount associated with this position.

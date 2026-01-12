@@ -3,9 +3,9 @@ using AccountingService.Presentation.DTOs.Requests;
 using AccountingService.Presentation.DTOs.Response;
 using AutoMapper;
 using Common.Domain.BankBook.RequestModels;
-using Common.Entities.Requests;
+using Common.Domain.PaginationSortSearch;
 using Common.Infrastructure;
-using Common.Interfaces;
+using Common.Interfaces.Services;
 using Common.ResultObject;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +39,7 @@ namespace AccountingService.Presentation.Controllers
         /// <summary>
         /// Retrieves a list of bank books based on the provided search criteria.
         /// </summary>
-        /// <param name="getBankBooksRequestDto">The search criteria for retrieving bank books, including offset, limit, sort options, and filters.</param>
+        /// <param name="bankBookQueryDto">The search criteria for retrieving bank books, including offset, limit, sort options, and filters.</param>
         /// <returns>
         /// An <see cref="IResult"/> containing the results of the bank book search operation.
         /// If successful, returns a 200 OK response with a paginated list of bank books.
@@ -48,19 +48,19 @@ namespace AccountingService.Presentation.Controllers
         /// <response code="401">Unauthorized - User not authenticated.</response>
         /// <response code="404">No bank books found for the current user.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [ProducesResponseType(typeof(PaginatedResponseDto<GetBankBookDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResponseDto<BankBookDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IResult> GetBankBooks([FromQuery] GetBankBooksRequestDto getBankBooksRequestDto)
+        public async Task<IResult> GetBankBooks([FromQuery] BankBookQueryDto bankBookQueryDto)
         {
             var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                var request = _mapper.Map<GetBankBooksRequest>(getBankBooksRequestDto);
+                var request = _mapper.Map<BankBookQueryModel>(bankBookQueryDto);
                 var result = await _accountingBookingService.GetBankBooks(request);
 
                 if (result.IsFailure)
@@ -69,7 +69,7 @@ namespace AccountingService.Presentation.Controllers
                     return result.ToProblemDetails();
                 }
 
-                var response = _mapper.Map<PaginatedResponseDto<GetBankBookDto>>(result.Value);
+                var response = _mapper.Map<PaginatedResponseDto<BankBookDto>>(result.Value);
 
                 ApplicationDiagnostics.RecordBusinessOperation("Success", response.Pagination.Total);
 
@@ -110,7 +110,7 @@ namespace AccountingService.Presentation.Controllers
         /// <response code="401">Unauthorized - User not authenticated.</response>
         /// <response code="404">No positions found for the specified bank book.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [ProducesResponseType(typeof(PaginatedResponseDto<GetBankBookPositionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResponseDto<BankBookPositionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,7 +122,7 @@ namespace AccountingService.Presentation.Controllers
 
             try
             {
-                var pagedSortedRequest = _mapper.Map<PagedSortedRequest>(pagedSortedRequestDto);
+                var pagedSortedRequest = _mapper.Map<PagedSortedRequestModel>(pagedSortedRequestDto);
                 var result = await _accountingBookingService.GetBankBookPositions(bankBookId, pagedSortedRequest);
 
                 if (result.IsFailure)
@@ -131,7 +131,7 @@ namespace AccountingService.Presentation.Controllers
                     return result.ToProblemDetails();
                 }
 
-                var response = _mapper.Map<PaginatedResponseDto<GetBankBookPositionDto>>(result.Value);
+                var response = _mapper.Map<PaginatedResponseDto<BankBookPositionDto>>(result.Value);
 
                 ApplicationDiagnostics.RecordBusinessOperation("Success", response.Pagination.Total);
 

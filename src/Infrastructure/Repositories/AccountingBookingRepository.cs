@@ -1,26 +1,23 @@
 ﻿using AutoMapper;
 using Common.Domain.BankBook.RequestModels;
+using Common.Domain.BankBook.ResponseModels;
+using Common.Domain.PaginationSortSearch;
 using Common.DomainHelpers;
-using Common.Entities;
-using Common.Entities.PaginationSortSearch;
-using Common.Entities.Requests;
-using Common.Entities.Response;
+using Common.Enums;
 using Common.Interfaces;
+using Common.Interfaces.Repositories;
 using Common.ResultObject;
-using Common.Utilities;
 using Infrastructure.Entities;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Repositories;
 
 /// <summary>
-/// Provides a concrete implementation of the <see cref="IAccountingBookingRepository"/> interface for managing <see cref="AccountingBooking"/> entities.
+/// Provides a concrete implementation of the <see cref="IAccountingBookingRepository"/> interface for managing <see cref="BankBookDbEntity"/> entities.
 /// Inherits basic CRUD operations from <see cref="BaseRepository{AccountingBooking}"/>.
 /// </summary>
-public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IAccountingBookingRepository
+public class AccountingBookingRepository : BaseRepository<BankBookDbEntity>, IAccountingBookingRepository
 {
     private readonly IMapper _mapper;
 
@@ -36,18 +33,18 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
     }
 
     /// <summary>
-    /// Retrieves a paginated list of <see cref="BankBook"/> based on the specified <see cref="GetBankBooksRequest"/>.
+    /// Retrieves a paginated list of <see cref="BankBookModel"/> based on the specified <see cref="BankBookQueryModel"/>.
     /// </summary>
     /// <param name="getBankBooksRequest">The request containing filtering, sorting and pagination options.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="PaginatedResponse{BankBook}"/>.</returns>
-    public async Task<PaginatedResponse<GetBankBook>> GetBankBooks(GetBankBooksRequest getBankBooksRequest)
+    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="PaginatedResponseModel{BankBook}"/>.</returns>
+    public async Task<PaginatedResponseModel<BankBookModel>> GetBankBooks(BankBookQueryModel getBankBooksRequest)
     {
         var query = _context.BankBooks.AsQueryable();
 
         var totalCount = await query.CountAsync();
 
         var items = await query
-            .Select(bankbook => new GetBankBook
+            .Select(bankbook => new BankBookModel
             {
                 Id = bankbook.Id,
                 Name = bankbook.Name,
@@ -55,11 +52,11 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
             })
             .ToListAsync();
 
-        return new PaginatedResponse<GetBankBook>
+        return new PaginatedResponseModel<BankBookModel>
         {
             Items = items,
             
-            Pagination = new Pagination
+            Pagination = new PaginationModel
             {
                 Page = (int)Math.Floor((double)getBankBooksRequest.Offset / getBankBooksRequest.Limit),
                 PageSize = getBankBooksRequest.Limit,
@@ -74,14 +71,14 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
     /// <param name="bankBookId">The unique identifier of the bank book.</param>
     /// <param name="pagedSortedRequest">The request containing pagination and sorting options.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a response with paginated bank book positions.</returns>
-    public async Task<PaginatedResponse<GetBankBookPosition>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    public async Task<PaginatedResponseModel<BankBookPositionModel>> GetBankBookPositions(Guid bankBookId, PagedSortedRequestModel pagedSortedRequest)
     {
         if (bankBookId == Guid.Empty)
         {
-            return new PaginatedResponse<GetBankBookPosition>
+            return new PaginatedResponseModel<BankBookPositionModel>
             {
                 Items = [],
-                Pagination = new Pagination
+                Pagination = new PaginationModel
                 {
                     Page = 0,
                     PageSize = 0,
@@ -100,7 +97,7 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
                 position.BookingDate,
                 position.Amount
             })
-            .Select(g => new GetBankBookPosition
+            .Select(g => new BankBookPositionModel
             {
                 BookingDate = g.Key.BookingDate,
                 SellerName = g.Key.SellerName,
@@ -110,9 +107,9 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
         var sortCriteria = pagedSortedRequest.SortCriteria;
         if (sortCriteria != null && sortCriteria.Any())
         {
-            var sortFieldMappings = new Dictionary<SortField, ISortExpression<GetBankBookPosition>>
+            var sortFieldMappings = new Dictionary<SortField, ISortExpression<BankBookPositionModel>>
             {
-                { SortField.BookingDate, new SortExpression<GetBankBookPosition, DateTime>(p => p.BookingDate) }
+                { SortField.BookingDate, new SortExpression<BankBookPositionModel, DateTime>(p => p.BookingDate) }
             };
 
             groupedQuery = SortPaginationHelper.ApplySorting(groupedQuery, sortCriteria, sortFieldMappings);
@@ -124,10 +121,10 @@ public class AccountingBookingRepository : BaseRepository<AccountingBooking>, IA
 
         var items = await groupedQuery.ToListAsync();
 
-        return new PaginatedResponse<GetBankBookPosition>
+        return new PaginatedResponseModel<BankBookPositionModel>
         {
             Items = items,
-            Pagination = new Pagination
+            Pagination = new PaginationModel
             {
                 Page = (int)Math.Floor((double)pagedSortedRequest.Offset / pagedSortedRequest.Limit),
                 PageSize = pagedSortedRequest.Limit,

@@ -1,11 +1,9 @@
-﻿using Common.Entities.PaginationSortSearch;
-
-namespace Common.Entities.Requests;
+﻿namespace Common.Domain.PaginationSortSearch;
 
 /// <summary>
 /// Represents a request with pagination and sorting capabilities.
 /// </summary>
-public class PagedSortedRequest
+public class PagedSortedRequestModel
 {
     /// <summary>
     /// Gets or sets the offset for pagination.
@@ -20,5 +18,5 @@ public class PagedSortedRequest
     /// <summary>
     /// Gets or sets the sorting criteria for the request.
     /// </summary>
-    public IEnumerable<SortCriteria>? SortCriteria { get; set; }
+    public IEnumerable<SortCriteriaModel>? SortCriteria { get; set; }
 }

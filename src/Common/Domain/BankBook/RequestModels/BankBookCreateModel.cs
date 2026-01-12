@@ -1,4 +1,6 @@
-﻿namespace Common.Domain.BankBook.RequestModels;
+﻿using Common.DomainHelpers;
+
+namespace Common.Domain.BankBook.RequestModels;
 
 /// <summary>
 /// Represents a request to create a bank book.
@@ -13,10 +15,10 @@ public class BankBookCreateModel
     /// <summary>
     /// Gets or sets the booking date for the bank book.
     /// </summary>
-    public DateTime BookingDate { get; set; }
+    public DateTime? BookingDate { get; set; }
 
     /// <summary>
     /// Gets the collection of positions to be included in the bank book.
     /// </summary>
-    public IEnumerable<BankBookPositionModel> Positions { get; set; } = Enumerable.Empty<BankBookPositionModel>();
+    public IEnumerable<BankBookPositionCreateModel> Positions { get; set; } = Enumerable.Empty<BankBookPositionCreateModel>();
 }

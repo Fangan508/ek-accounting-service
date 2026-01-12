@@ -1,8 +1,9 @@
 ﻿using Common.Domain.BankBook.RequestModels;
-using Common.Entities.Requests;
-using Common.Entities.Response;
+using Common.Domain.BankBook.ResponseModels;
+using Common.Domain.PaginationSortSearch;
 using Common.ResultObject;
-namespace Common.Interfaces;
+
+namespace Common.Interfaces.Services;
 
 /// <summary>
 /// Defines the contract for getting accounting booking.
@@ -15,9 +16,9 @@ public interface IAccountingBookingService
     /// <param name="getGetBankBooksRequest">The request containing pagination and filtering details.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{TValue}"/>
-    /// object wrapping a <see cref="PaginatedResponse{GetBankBook}"/> which includes the collection of bank books and metadata.
+    /// object wrapping a <see cref="PaginatedResponseModel{BankBookModel}"/> which includes the collection of bank books and metadata.
     /// </returns>
-    Task<Result<PaginatedResponse<GetBankBook>>> GetBankBooks(GetBankBooksRequest getGetBankBooksRequest);
+    Task<Result<PaginatedResponseModel<BankBookModel>>> GetBankBooks(BankBookQueryModel getGetBankBooksRequest);
 
     /// <summary>
     /// Asynchronously retrieves a paginated list of bank book positions.
@@ -26,9 +27,9 @@ public interface IAccountingBookingService
     /// <param name="pagedSortedRequest">The request containing pagination and sorting details.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{TValue}"/>
-    /// object wrapping a <see cref="PaginatedResponse{GetBankBookPosition}"/> which includes the collection of bank books and metadata.
+    /// object wrapping a <see cref="PaginatedResponseModel{GetBankBookPosition}"/> which includes the collection of bank books and metadata.
     /// </returns>
-    Task<Result<PaginatedResponse<GetBankBookPosition>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest);
+    Task<Result<PaginatedResponseModel<BankBookPositionModel>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequestModel pagedSortedRequest);
 
     /// <summary>
     /// Asynchronously creates a new bank book.

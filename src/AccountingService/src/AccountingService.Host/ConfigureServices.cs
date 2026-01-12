@@ -2,7 +2,8 @@
 using AccountingService.Presentation.Mappings;
 using Azure.Identity;
 using Common.Infrastructure;
-using Common.Interfaces;
+using Common.Interfaces.Repositories;
+using Common.Interfaces.Services;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using Service;
@@ -92,7 +93,7 @@ public static class ConfigureServices
         services.AddLogging();
         services.AddScoped<IAccountingBookingService, AccountingBookingService>();
 
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(typeof(PresentationMappingProfile));
 
         // Register repositories, unit of work, etc.
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));

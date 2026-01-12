@@ -1,4 +1,4 @@
-﻿namespace Common.Entities.PaginationSortSearch;
+﻿namespace Common.Enums;
 
 /// <summary>
 /// Specifies the sort order for a query.

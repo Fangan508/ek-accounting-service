@@ -1,9 +1,15 @@
-﻿namespace Common.Entities.PaginationSortSearch;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Domain.PaginationSortSearch;
 
 /// <summary>
 /// Represents pagination details for a paginated response.
 /// </summary>
-public class Pagination
+public class PaginationModel
 {
     /// <summary>
     /// Gets or sets the current page number.

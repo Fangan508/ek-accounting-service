@@ -1,4 +1,4 @@
-﻿namespace Common.Entities.PaginationSortSearch;
+﻿namespace Common.Enums;
 
 /// <summary>
 /// Specifies the fields that can be used for sorting across different entity types.

@@ -1,12 +1,8 @@
-﻿using Common.Entities.PaginationSortSearch;
+﻿using Common.Domain.PaginationSortSearch;
+using Common.Enums;
 using Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.Utilities;
+namespace Infrastructure.Helpers;
 
 /// <summary>
 /// Provides helper methods for applying sorting and pagination to queries.
@@ -22,8 +18,8 @@ public static class SortPaginationHelper
     /// <param name="fieldMappings">A dictionary mapping sort fields to sort expressions.</param>
     /// <returns>The sorted IQueryable.</returns>
     public static IQueryable<T> ApplySorting<T>(
-        IQueryable<T> query, 
-        IEnumerable<SortCriteria> sortCriteria, 
+        IQueryable<T> query,
+        IEnumerable<SortCriteriaModel> sortCriteria,
         Dictionary<SortField, ISortExpression<T>> fieldMappings)
     {
         IOrderedQueryable<T>? orderedQuery = null;
@@ -34,8 +30,8 @@ public static class SortPaginationHelper
             var criteria = sortCriteriaList[i];
 
             if (!fieldMappings.TryGetValue(criteria.Field, out var sortExpression))
-            { 
-                continue; 
+            {
+                continue;
             }
 
             if (i == 0)

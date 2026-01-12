@@ -1,9 +1,9 @@
-﻿namespace Common.Entities.Response;
+﻿namespace Common.Domain.BankBook.ResponseModels;
 
 /// <summary>
 /// Represents a response containing details of an bank book.
 /// </summary>
-public class GetBankBook
+public class BankBookModel
 {
     /// <summary>
     /// Gets or sets the unique identifier for the bank book.

@@ -1,4 +1,4 @@
-﻿using Common.Interfaces;
+﻿using Common.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;

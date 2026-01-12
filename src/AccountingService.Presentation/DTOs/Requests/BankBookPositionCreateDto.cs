@@ -3,6 +3,6 @@
 /// <summary>
 /// Represents a position in a bank book.
 /// </summary>
-public class BankBookPositionDto
+public class BankBookPositionCreateDto
 {
 }

@@ -1,4 +1,4 @@
-﻿namespace Common.Interfaces;
+﻿namespace Common.Interfaces.Repositories;
 
 /// <summary>
 /// Defines the basic contract for a generic repository to manage data access operations for a specific entity type.

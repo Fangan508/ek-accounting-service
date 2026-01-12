@@ -24,5 +24,5 @@ public class BankBookCreateDto
     /// </summary>
     [Required(ErrorMessage = "Positions must be provided.")]
     [MinLength(1, ErrorMessage = "At least one position must be provided.")]
-    public IEnumerable<BankBookPositionDto> Positions { get; set; } = Enumerable.Empty<BankBookPositionDto>();
+    public IEnumerable<BankBookPositionCreateDto> Positions { get; set; } = Enumerable.Empty<BankBookPositionCreateDto>();
 }

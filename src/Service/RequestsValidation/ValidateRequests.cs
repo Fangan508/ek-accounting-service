@@ -1,7 +1,6 @@
 ﻿using Common.Domain.BankBook.RequestModels;
-using Common.Entities.PaginationSortSearch;
-using Common.Entities.Requests;
-using Common.Entities.Response;
+using Common.Domain.BankBook.ResponseModels;
+using Common.Domain.PaginationSortSearch;
 using Common.Errors;
 using Common.ResultObject;
 
@@ -13,16 +12,16 @@ namespace Service.RequestsValidation;
 public static class ValidateRequests
 {
     /// <summary>
-    /// Validates the <see cref="GetBankBooksRequest"/> and returns a result indicating success or failure.
+    /// Validates the <see cref="BankBookQueryModel"/> and returns a result indicating success or failure.
     /// </summary>
     /// <param name="request">The request to validate.</param>
     /// <returns>
     /// A <see cref="Result{TValue}"/> containing a paginated response of accounting bookings if validation succeeds, or an error if validation fails.</returns>
-    public static Result<PaginatedResponse<GetBankBook>> ValidateGetBankBooksRequest(GetBankBooksRequest request)
+    public static Result<PaginatedResponseModel<BankBookModel>> ValidateGetBankBooksRequest(BankBookQueryModel request)
     {
         if (request == null)
         {
-            return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.NullRequest", "Get bank books request cannot be null"));
+            return Result.Failure<PaginatedResponseModel<BankBookModel>>(AccountingError.Validation("AccountingError.NullRequest", "Get bank books request cannot be null"));
         }
 
         if (request.BookingDate.HasValue)
@@ -30,24 +29,24 @@ public static class ValidateRequests
             DateTime date = request.BookingDate.Value;
             if (date == DateTime.MinValue || date > DateTime.UtcNow)
             {
-                return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.InvalidBookingBankDatae", "Invalid accounting booking date provided"));
+                return Result.Failure<PaginatedResponseModel<BankBookModel>>(AccountingError.Validation("AccountingError.InvalidBookingBankDatae", "Invalid accounting booking date provided"));
             }
         }
 
         if (request.Offset < 0)
         {
-            return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.InvalidPageNumber", "Offset can't be less than zero"));
+            return Result.Failure<PaginatedResponseModel<BankBookModel>>(AccountingError.Validation("AccountingError.InvalidPageNumber", "Offset can't be less than zero"));
         }   
 
         if (request.Limit < 1)
         {
-            return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Validation("AccountingError.InvalidPageSize", "Limit must be greater than 0."));
+            return Result.Failure<PaginatedResponseModel<BankBookModel>>(AccountingError.Validation("AccountingError.InvalidPageSize", "Limit must be greater than 0."));
         }
 
-       var paginatedResponse = new PaginatedResponse<GetBankBook>
+       var paginatedResponse = new PaginatedResponseModel<BankBookModel>
         {
             Items = [],
-            Pagination = new Pagination { }
+            Pagination = new PaginationModel { }
         };
 
         return Result.Success(paginatedResponse);
@@ -59,27 +58,27 @@ public static class ValidateRequests
     /// <param name="bankBookId">The ID of the bank book to validate.</param>
     /// <param name="pagedSortedRequest">The paginated and sorted request to validate.</param>
     /// <returns><see cref="Result{TValue}"/> containing a paginated response of accounting book positions if validation succeeds, or an error if validation fails.</returns>
-    public static Result<PaginatedResponse<GetBankBookPosition>> ValidateGetBankBookPositionsRequest(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    public static Result<PaginatedResponseModel<BankBookPositionModel>> ValidateGetBankBookPositionsRequest(Guid bankBookId, PagedSortedRequestModel pagedSortedRequest)
     {
         if (bankBookId == Guid.Empty)
         { 
-            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidBankBookId", "Bank Book Id cannot be empty."));
+            return Result.Failure<PaginatedResponseModel<BankBookPositionModel>>(AccountingError.Validation("AccountingError.InvalidBankBookId", "Bank Book Id cannot be empty."));
         }
 
         if (pagedSortedRequest.Offset < 0)
         {
-            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidPageNumber", "Offset can't be less than zero"));
+            return Result.Failure<PaginatedResponseModel<BankBookPositionModel>>(AccountingError.Validation("AccountingError.InvalidPageNumber", "Offset can't be less than zero"));
         }
 
         if (pagedSortedRequest.Limit < 1)
         {
-            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Validation("AccountingError.InvalidPageSize", "Limit must be greater than 0."));
+            return Result.Failure<PaginatedResponseModel<BankBookPositionModel>>(AccountingError.Validation("AccountingError.InvalidPageSize", "Limit must be greater than 0."));
         }
 
-        var response = new PaginatedResponse<GetBankBookPosition>
+        var response = new PaginatedResponseModel<BankBookPositionModel>
         {
             Items = [],
-            Pagination = new Pagination { }
+            Pagination = new PaginationModel { }
         };
 
         return Result.Success(response);

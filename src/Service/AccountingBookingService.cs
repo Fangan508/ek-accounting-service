@@ -1,10 +1,10 @@
 ﻿using Common.Domain.BankBook.RequestModels;
+using Common.Domain.BankBook.ResponseModels;
+using Common.Domain.PaginationSortSearch;
 using Common.DomainHelpers;
-using Common.Entities;
-using Common.Entities.Requests;
-using Common.Entities.Response;
 using Common.Errors;
-using Common.Interfaces;
+using Common.Interfaces.Repositories;
+using Common.Interfaces.Services;
 using Common.ResultObject;
 using Microsoft.Extensions.Logging;
 using Service.RequestsValidation;
@@ -40,9 +40,9 @@ public class AccountingBookingService : IAccountingBookingService
     /// <param name="getBankBooksRequest">The request containing filters, pagination, and sorting operations.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{T}"/>
-    /// where T is a <see cref="PaginatedResponse{GetBankBook}"/> which includes the paginated list of bank books.
+    /// where T is a <see cref="PaginatedResponseModel{GetBankBook}"/> which includes the paginated list of bank books.
     /// </returns>
-    public async Task<Result<PaginatedResponse<GetBankBook>>> GetBankBooks(GetBankBooksRequest getBankBooksRequest)
+    public async Task<Result<PaginatedResponseModel<BankBookModel>>> GetBankBooks(BankBookQueryModel getBankBooksRequest)
     {
         try
         {
@@ -60,7 +60,7 @@ public class AccountingBookingService : IAccountingBookingService
         {
             _logger?.LogError(ex, "Failed to get bank books with request: {@Request}", getBankBooksRequest);
 
-            return Result.Failure<PaginatedResponse<GetBankBook>>(AccountingError.Failure("GetBankBooks.Failed", ex.Message));
+            return Result.Failure<PaginatedResponseModel<BankBookModel>>(AccountingError.Failure("GetBankBooks.Failed", ex.Message));
         }
     }
 
@@ -71,9 +71,9 @@ public class AccountingBookingService : IAccountingBookingService
     /// <param name="pagedSortedRequest">The request containing pagination and sorting details.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{T}"/>
-    /// where T is a <see cref="PaginatedResponse{GetBankBookPositions}"/> which includes the paginated list of bank book positions.
+    /// where T is a <see cref="PaginatedResponseModel{GetBankBookPositions}"/> which includes the paginated list of bank book positions.
     /// </returns>
-    public async Task<Result<PaginatedResponse<GetBankBookPosition>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequest pagedSortedRequest)
+    public async Task<Result<PaginatedResponseModel<BankBookPositionModel>>> GetBankBookPositions(Guid bankBookId, PagedSortedRequestModel pagedSortedRequest)
     {
         try
         {
@@ -86,7 +86,7 @@ public class AccountingBookingService : IAccountingBookingService
             var exists = await _accountingBookingRepository.BankBookExists(bankBookId);
             if (!exists) 
             {
-                return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.NotFound("GetBankBookPositions.Failed", $"The bank book with id {bankBookId}, was not found."));
+                return Result.Failure<PaginatedResponseModel<BankBookPositionModel>>(AccountingError.NotFound("GetBankBookPositions.Failed", $"The bank book with id {bankBookId}, was not found."));
             }
 
             var response = await _accountingBookingRepository.GetBankBookPositions(bankBookId, pagedSortedRequest);
@@ -95,7 +95,7 @@ public class AccountingBookingService : IAccountingBookingService
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Failed to get bank book positions for bank book id: {@id}", bankBookId);
-            return Result.Failure<PaginatedResponse<GetBankBookPosition>>(AccountingError.Failure("GetBankBookPositions.Failed", ex.Message));
+            return Result.Failure<PaginatedResponseModel<BankBookPositionModel>>(AccountingError.Failure("GetBankBookPositions.Failed", ex.Message));
         }
     }
 
@@ -133,7 +133,7 @@ public class AccountingBookingService : IAccountingBookingService
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
-            BookingDate = request.BookingDate
+            BookingDate = request.BookingDate ?? DateTime.UtcNow
         };
 
         if (request.Positions.Any())
@@ -150,13 +150,13 @@ public class AccountingBookingService : IAccountingBookingService
     }
 
 
-    private async Task<IEnumerable<BankBookPositionCreated>> CreateBankBookPositions(IEnumerable<BankBookPositionModel> bankBookPositions)
+    private async Task<IEnumerable<BankBookPositionCreated>> CreateBankBookPositions(IEnumerable<BankBookPositionCreateModel> bankBookPositions)
     {
         return bankBookPositions.Select(position => new BankBookPositionCreated
         {
             Id = Guid.NewGuid(),
             SellerName = position.SellerName,
-            BookingDate = position.BookingDate ?? DateTime.UtcNow,
+            BookingDate = position.BookingDate,
             Amount = position.Amount
         });
     }

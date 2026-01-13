@@ -5,7 +5,7 @@ namespace Common.Domain.BankBook.RequestModels;
 /// <summary>
 /// Represents a request to retrieve accounting booking bank books with optional filtering by booking bank date.
 /// </summary>
-public class BankBookQueryModel : PagedSortedRequestModel
+public class BankBookQueryModel : PagedSortedSearchRequestModel
 {
     /// <summary>
     /// Get or set the booking bank date for filtering booking banks.

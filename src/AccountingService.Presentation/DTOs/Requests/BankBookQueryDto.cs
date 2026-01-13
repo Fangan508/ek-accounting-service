@@ -1,9 +1,11 @@
-﻿namespace AccountingService.Presentation.DTOs.Requests;
+﻿using Common.Domain.PaginationSortSearch;
+
+namespace AccountingService.Presentation.DTOs.Requests;
 
 /// <summary>
 /// Represents a request to get bank books with pagination, sorting, and searching capabilities.
 /// </summary>
-public class BankBookQueryDto
+public class BankBookQueryDto : PagedSortedSearchRequestDto
 {
     /// <summary>
     /// Get or set the booking bank date for filtering booking banks.

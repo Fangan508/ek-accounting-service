@@ -149,9 +149,9 @@ public class AccountingBookingRepository : BaseRepository<BankBookDbEntity>, IAc
     /// <param name="bankBookModel">The bank book entity to be created.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
     public async Task CreateBankBook(BankBookCreated bankBookModel)
-    {   
-        var bankBook = _mapper.Map<BankBookDbEntity>(bankBookModel);
-        await AddAsync(bankBook);
-        await SaveAsync();
+    {
+            var bankBook = _mapper.Map<BankBookDbEntity>(bankBookModel);
+            await AddAsync(bankBook);
+            await SaveAsync();
     }
 }

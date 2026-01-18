@@ -18,8 +18,9 @@ public class PresentationMappingProfile : Profile
     /// </summary>
     public PresentationMappingProfile()
     {
-        // Entity to DTO mappings
-        // Note: This area is for <MyClass> to <MyClass>Dto mappings.
+
+
+        // Model to DTO mappings
         CreateMap<BankBookModel, BankBookDto>();
         CreateMap<PaginationModel, PaginationDto>();
         CreateMap<PaginatedResponseModel<BankBookModel>, PaginatedResponseDto<BankBookDto>>();
@@ -27,8 +28,10 @@ public class PresentationMappingProfile : Profile
         CreateMap<BankBookPositionModel, BankBookPositionDto>();
         CreateMap<PaginatedResponseModel<BankBookPositionModel>, PaginatedResponseDto<BankBookPositionDto>>();
 
-        // DTO to entity mappings
-        // Note: This area is for <MyClass>Dto to <MyClass> mappings.
+        // DTO to Model mappings
+        CreateMap<BankBookPositionCreateDto, BankBookPositionCreateModel>();
+        CreateMap<BankBookCreateDto, BankBookCreateModel>();
+
         CreateMap<PagedSortedRequestDto, PagedSortedRequestModel>();
 
         CreateMap<PagedSortedSearchRequestDto, PagedSortedSearchRequestModel>()

@@ -149,7 +149,6 @@ public class AccountingBookingService : IAccountingBookingService
         return bankBook;
     }
 
-
     private async Task<IEnumerable<BankBookPositionCreated>> CreateBankBookPositions(IEnumerable<BankBookPositionCreateModel> bankBookPositions)
     {
         return bankBookPositions.Select(position => new BankBookPositionCreated

@@ -159,14 +159,22 @@ namespace AccountingService.Presentation.Controllers
         }
 
         /// <summary>
-        /// Creates a new bank book with the provided details.
+        /// Creates a new bank book based on the provided request data.
         /// </summary>
-        /// <param name="bankBookCreateDto">The </param>
-        /// <returns></returns>
+        /// <param name="bankBookCreateDto">The request data for creating the bank bank.</param>
+        /// <returns>
+        /// An <see cref="IResult"/> containing the result of the create operation.
+        /// If successful, returns a 200 status code with the details of the created bank book.
+        /// </returns>
+        /// <response code="200">Successfully created the bank book.</response>
+        /// <response code="400">Validation error occured.</response>
+        /// <response code="401">Unauthorized - User not authenticated.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [ProducesResponseType(typeof(BankBookCreatedDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
         public async Task<IResult> CreateBankBook([FromBody] BankBookCreateDto bankBookCreateDto)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -182,7 +190,11 @@ namespace AccountingService.Presentation.Controllers
                     return result.ToProblemDetails();
                 }
 
-                var response = _mapper.Map<BankBookCreatedDto>(result.Value);
+                var response = new BankBookCreatedDto
+                {
+                    Message = "Bank book created successfully.",
+                    Id = result.Value
+                };
 
                 ApplicationDiagnostics.RecordBusinessOperation("Success");
 

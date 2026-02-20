@@ -1,7 +1,7 @@
 ﻿using Common.Domain.BankBook.RequestModels;
 using Common.Domain.BankBook.ResponseModels;
 using Common.Domain.PaginationSortSearch;
-using Common.ResultObject;
+using Common.ResultObjects;
 
 namespace Common.Interfaces.Services;
 
@@ -40,4 +40,14 @@ public interface IAccountingBookingService
     /// object wrapping the unique identifier (<see cref="Guid"/>) of the newly created bank book.
     /// </returns>
     Task<Result<Guid>> CreateBankBook(BankBookCreateModel request);
+
+    /// <summary>
+    /// Asynchronously exports a file related to a bank book.
+    /// </summary>
+    /// <param name="bankBookExportCreateModel">The details of the bank book to be exported.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a <see cref="Result{TValue}"/>
+    /// object wrapping a <see cref="BankBookExportCreateModel"/> which includes the data necessary for exporting the bank book.
+    /// </returns>
+    Task<Result<BankBookExportModel>> ExportBankBookAsync(BankBookExportCreateModel bankBookExportCreateModel);
 }

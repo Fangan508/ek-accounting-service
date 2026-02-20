@@ -101,6 +101,7 @@ public static class ConfigureServices
         // Register repositories, unit of work, etc.
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<IAccountingBookingRepository, AccountingBookingRepository>();
+        services.AddScoped<IBankBookExportRepository, BankBookExportRepository>();
 
         return services;
     }

@@ -28,6 +28,9 @@ public class PresentationMappingProfile : Profile
         CreateMap<BankBookPositionModel, BankBookPositionDto>();
         CreateMap<PaginatedResponseModel<BankBookPositionModel>, PaginatedResponseDto<BankBookPositionDto>>();
 
+        CreateMap<BankBookExportRequestDto, BankBookExportCreateModel>();
+        CreateMap<BankBookPositionExportRequestDto, BankBookPositionExportCreateModel>();
+
         // DTO to Model mappings
         CreateMap<BankBookPositionCreateDto, BankBookPositionCreateModel>();
         CreateMap<BankBookCreateDto, BankBookCreateModel>();

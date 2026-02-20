@@ -1,12 +1,11 @@
-﻿using AccountingService.Presentation.DTOs;
-using AccountingService.Presentation.DTOs.Requests;
+﻿using AccountingService.Presentation.DTOs.Requests;
 using AccountingService.Presentation.DTOs.Response;
 using AutoMapper;
 using Common.Domain.BankBook.RequestModels;
 using Common.Domain.PaginationSortSearch;
 using Common.Infrastructure;
 using Common.Interfaces.Services;
-using Common.ResultObject;
+using Common.ResultObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -157,6 +156,57 @@ namespace AccountingService.Presentation.Controllers
                     stopwatch.Elapsed.TotalSeconds);
             }
         }
+
+        /// <summary>
+        /// Uploads and stores an Excel file for the bank book.
+        /// </summary>
+        /// <param name="exportBankBookRequestDto">The request data for exporting the bank book.</param>
+        /// <returns>
+        /// An <see cref="IResult"/> containing the result of the export operation.
+        /// If successful, returns a 200 status code with the created export record.
+        /// </returns>
+        /// <response code="200">Successfully uploaded the export file.</response>    
+        /// <response code="400">Validation error occurred (invalid file type or size).</response>
+        /// <response code="401">Unauthorized - User not authenticated.</response>
+        /// <response code="404">Bank book not found for the specified ID.</response>
+        /// <response code="500">Internal server error occurred.</response>
+        [ProducesResponseType(typeof(BankBookExportDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("{bankBookId}/export")]
+        public async Task<IResult> ExportBankBook([FromBody] BankBookExportRequestDto exportBankBookRequestDto)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                var request = _mapper.Map<BankBookExportCreateModel>(exportBankBookRequestDto);
+                var result = await _accountingBookingService.ExportBankBookAsync(request);
+
+                if (result.IsFailure)
+                {
+                    ApplicationDiagnostics.RecordError(result.Error.Name, result.Error.Code);
+                    return result.ToProblemDetails();
+                }
+
+                var response = _mapper.Map<BankBookExportDto>(result.Value);
+
+                ApplicationDiagnostics.RecordBusinessOperation("Success");
+
+                return Results.Ok(response);
+            }
+            finally
+            {
+                stopwatch.Stop();
+                ApplicationDiagnostics.RecordHttpRequest(
+                    HttpContext.Request.Method,
+                    HttpContext.Request.Path,
+                    HttpContext.Response.StatusCode,
+                    stopwatch.Elapsed.TotalSeconds);
+            }
+        }
+
 
         /// <summary>
         /// Creates a new bank book based on the provided request data.

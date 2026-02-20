@@ -19,6 +19,11 @@ public class AccountingDbContext : DbContext
     public virtual DbSet<BankBookPositionDbEntity> BankBookPositions { get; set; }
 
     /// <summary>
+    /// Gets or sets the BankBookExport table.
+    /// </summary>
+    public virtual DbSet<BankBookExportDBEntity> BankBookExports { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AccountingDbContext"/> class.
     /// </summary>
     /// <param name="options"></param>

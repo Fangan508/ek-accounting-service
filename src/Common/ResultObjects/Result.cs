@@ -1,7 +1,7 @@
 ﻿using Common.Errors;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Common.ResultObject;
+namespace Common.ResultObjects;
 
 /// <summary>
 /// Provides an object containing details of errors.

@@ -2,7 +2,7 @@
 using Common.Domain.BankBook.ResponseModels;
 using Common.Domain.PaginationSortSearch;
 using Common.Errors;
-using Common.ResultObject;
+using Common.ResultObjects;
 
 namespace Service.RequestsValidation;
 

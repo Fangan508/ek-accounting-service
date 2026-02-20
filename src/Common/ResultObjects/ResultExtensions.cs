@@ -1,7 +1,7 @@
 ﻿using Common.Errors;
 using Microsoft.AspNetCore.Http;
 
-namespace Common.ResultObject;
+namespace Common.ResultObjects;
 
 /// <summary>
 /// Provides extension methods for handling <see cref="Result"/> objects.
